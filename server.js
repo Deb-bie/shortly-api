@@ -34,7 +34,7 @@ app.get("/", async (req, res, next) => {
   
   // URL shortener endpoint
 app.post("/", async (req, res) => {
-    console.log("HERE", req.body.url);
+    // console.log("HERE", req.body.url);
     const { origUrl } = req.body;
     const base = process.env.DOMAIN_URL;
   
@@ -84,11 +84,12 @@ app.get("/:urlId", async (req, res) => {
 
 
 // delete url
-app.delete("/:urlId", async (req, res) => {
+app.delete("/:id", async (req, res) => {
     try {
-        await Url.findByIdAndDelete({ urlId: req.params.urlId })
+        await Url.findByIdAndDelete(req.params.id)
+        // res.status(200).json(`deleted`)
     } catch (error) {
-        res.status(500).json("Server Error");
+        res.status(500).json(error);
     }
 })
 
