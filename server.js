@@ -23,7 +23,7 @@ app.use(express.json());
 
 
 // get all saved URLs
-app.get("/", async (req, res, next) => {
+app.get("/all", async (req, res, next) => {
     try {
         const allUrls = await Url.find()
         res.status(200).json(allUrls)
@@ -33,7 +33,7 @@ app.get("/", async (req, res, next) => {
 });
   
   // URL shortener endpoint
-app.post("/", async (req, res) => {
+app.post("/short", async (req, res) => {
     // console.log("HERE", req.body.url);
     const { origUrl } = req.body;
     const base = process.env.DOMAIN_URL;
@@ -69,14 +69,14 @@ app.post("/", async (req, res) => {
 
 
 // redirect endpoint
-app.get("/:urlId", async (req, res) => {
+app.get("/shortly/:urlId", async (req, res) => {
     try {
-      const url = await Url.findOne({ urlId: req.params.urlId })
-      if (url) {
-        url.clicks++;
-        url.save();
-        return res.redirect(url.origUrl);
-      } else res.status(404).json("Not found");
+      res.send("e")
+      // console.log(`${process.env.DOMAIN_URL}/`)
+      // const url = await Url.findOne({ urlId: req.params.urlId })
+      // if (url) {
+      //   return res.redirect(url.origUrl);
+      // } else res.status(404).json("Not found");
     } catch (err) {
       res.status(500).json("Server Error");
     }
