@@ -37,6 +37,7 @@ app.post("/", async (req, res) => {
     // console.log("HERE", req.body.url);
     const { origUrl } = req.body;
     const base = process.env.DOMAIN_URL;
+    const ba = "https://shortly-api-b5u2.onrender.com"
   
     const urlId = shortid.generate();
     if (utils.validateUrl(origUrl)) {
@@ -45,11 +46,14 @@ app.post("/", async (req, res) => {
         if (url) {
           res.json(url);
         } else {
-          const shortUrl = `${base}/${urlId}`;
+          // const shortUrl = `${base}/${urlId}`;
+          const shortUrl = `${ba}/${urlId}`
+          const mya = shortUrl
   
           url = new Url({
             origUrl,
-            shortUrl,
+            // shortUrl,
+            mya,
             urlId,
             date: new Date(),
           });
