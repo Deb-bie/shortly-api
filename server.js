@@ -24,79 +24,69 @@ app.use(express.json());
 
 // get all saved URLs
 app.get("/", async (req, res, next) => {
-    try {
-        const allUrls = await Url.find()
-        res.status(200).json(allUrls)
-    } catch (error) {
-        next(error)
-    }
+  try {
+    const allUrls = await Url.find()
+    res.status(200).json(allUrls)
+  } catch (error) {
+    next(error)
+  }
 });
   
   // URL shortener endpoint
 app.post("/", async (req, res) => {
-    // console.log("HERE", req.body.url);
-    const { origUrl } = req.body;
-    const base = process.env.DOMAIN_URL;
-    const ba = "https://shortly-api-b5u2.onrender.com"
+  const { origUrl } = req.body;
+  const base = process.env.DOMAIN_URL;
   
-    const urlId = shortid.generate();
-    if (utils.validateUrl(origUrl)) {
-      try {
-        let url = await Url.findOne({ origUrl });
-        if (url) {
-          res.json(url);
-        } else {
-          // const shortUrl = `${base}/${urlId}`;
-          const shortUrl = `${ba}/${urlId}`
-          const mya = shortUrl
-  
-          url = new Url({
-            origUrl,
-            // shortUrl,
-            mya,
-            urlId,
-            date: new Date(),
-          });
-  
-          await url.save();
-          res.json(url);
-        }
-      } catch (err) {
-        console.log(err);
-        res.status(500).json("Server Error");
+  const urlId = shortid.generate();
+  if (utils.validateUrl(origUrl)) {
+    try {
+      let url = await Url.findOne({ origUrl });
+      if (url) {
+        res.json(url);
+      } else {
+        const shortUrl = `${base}/${urlId}`;  
+        url = new Url({
+          origUrl,
+          shortUrl,    
+          urlId,
+          date: new Date(),
+        });
+        await url.save();
+        res.json(url);
       }
-    } else {
-      res.status(400).json("Invalid Original Url");
+    } catch (err) {
+      console.log(err);
+      res.status(500).json("Server Error");
     }
-  });
+  } else {
+    res.status(400).json("Invalid Original Url");
+  }
+});
   
-
 
 // redirect endpoint
 app.get("/:urlId", async (req, res) => {
-    try {
-      console.log(`${process.env.DOMAIN_URL}/`)
-      const url = await Url.findOne({ urlId: req.params.urlId })
-      if (url) {
-        return res.redirect(url.origUrl);
-      } else res.status(404).json("Not found");
-    } catch (err) {
-      res.status(500).json("Server Error");
-    }
+  try {
+    const url = await Url.findOne({ urlId: req.params.urlId })
+    if (url) {
+      return res.redirect(url.origUrl);
+    } else res.status(404).json("Not found");
+  } catch (err) {
+    res.status(500).json("Server Error");
+  }
 });
 
 
 // delete url
 app.delete("/:id", async (req, res) => {
-    try {
-        await Url.findByIdAndDelete(req.params.id)
-        // res.status(200).json(`deleted`)
-    } catch (error) {
-        res.status(500).json(error);
-    }
+  try {
+    await Url.findByIdAndDelete(req.params.id)
+  } catch (error) {
+    res.status(500).json(error);
+  }
 })
 
 
 app.listen(5555, () => {
-    console.log(`Server is running on port ${port} `)
+  console.log(`Server is running on port ${port} `)
 })
